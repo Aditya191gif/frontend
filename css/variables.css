@@ -1,0 +1,39 @@
+:root {
+  /* Color Palette - Cyber Futuristic Grid Theme */
+  --bg-dark: #07090e;
+  --bg-card: #0e131f;
+  --bg-card-hover: #151b2c;
+  --bg-panel: #121829;
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 242, 254, 0.25);
+  
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  /* Brand Accent Colors */
+  --cyan-accent: #00f2fe;
+  --cyan-glow: rgba(0, 242, 254, 0.3);
+  --purple-accent: #7928ca;
+  --violet-accent: #3b82f6;
+  --emerald-accent: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.2);
+  --amber-accent: #f59e0b;
+  --amber-glow: rgba(245, 158, 11, 0.2);
+  --rose-accent: #ef4444;
+  --rose-glow: rgba(239, 68, 68, 0.2);
+  
+  /* Status Colors */
+  --pass-color: #10b981;
+  --warn-color: #f59e0b;
+  --fail-color: #ef4444;
+
+  /* Layout & Spacing */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}

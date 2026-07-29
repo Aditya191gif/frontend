@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talent Track AI - Intelligent Resume Shortlisting Platform</title>
+  <meta name="description" content="AI-powered recruitment and ATS resume shortlisting platform matching candidates using machine learning, PyMuPDF, pdfplumber, spaCy, and Scikit-Learn.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-icon">T</div>
+        <div>
+          <div class="brand-title">Talent Track AI</div>
+          <div class="brand-subtitle">AI-Powered Recruitment & ATS Intelligence</div>
+        </div>
+      </div>
+      
+      <div style="display:flex; gap:12px; align-items:center;">
+        <div class="server-status">
+          <span class="status-dot" id="server-dot"></span>
+          <span id="server-text">Connecting to Backend...</span>
+        </div>
+        <div class="server-status" style="border-color: rgba(16, 185, 129, 0.3);">
+          <span class="status-dot" style="background-color:#00f2fe; box-shadow:0 0 8px #00f2fe;"></span>
+          <span id="db-status-text">MongoDB Ready</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Slide 2: Problem & Impact Banner -->
+    <section class="problem-banner">
+      <div class="stat-card">
+        <div class="stat-number cyan">23 hrs</div>
+        <div class="stat-label">Screening Time Saved</div>
+        <div class="stat-desc">Manual HR review reduced to instant AI score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number purple">75%</div>
+        <div class="stat-label">Unread Filters Eliminated</div>
+        <div class="stat-desc">spaCy & PyMuPDF extract raw technical potential</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number amber">95%</div>
+        <div class="stat-label">ATS Accuracy Rate</div>
+        <div class="stat-desc">Validated on Scikit-Learn TF-IDF vector similarity</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number rose">3×</div>
+        <div class="stat-label">Faster Hiring Pipeline</div>
+        <div class="stat-desc">From job posting to structured candidate report</div>
+      </div>
+    </section>
+
+    <!-- Main Grid Layout -->
+    <div class="main-grid">
+
+      <!-- Left Panel: Job Input & Candidate Resume Loader -->
+      <aside class="left-col">
+        <div class="card-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              1. Job Posting & Rules Setup
+            </h2>
+            <span class="panel-tag">Criteria Setup</span>
+          </div>
+
+          <form id="analysis-form">
+            <div class="form-group">
+              <label class="form-label" for="company-name">Company Name</label>
+              <input type="text" id="company-name" class="form-input" value="TalentTrack AI Corp">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="job-role">Target Job Role</label>
+              <input type="text" id="job-role" class="form-input" value="Senior AI / ML Engineer">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="job-desc">Job Description (JD)</label>
+              <textarea id="job-desc" class="form-textarea">We are seeking a Senior AI/ML Engineer with 4+ years of hands-on experience building NLP models, spaCy parsing engines, FastAPI microservices, and React.js web apps. Requires proficiency in Python, TensorFlow, PyTorch, Docker, PostgreSQL, MongoDB, and Cloud AWS deployment.</textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="req-skills">Required Skills (Comma separated)</label>
+              <input type="text" id="req-skills" class="form-input" value="Python, FastAPI, TensorFlow, React, Docker, AWS, spaCy, MongoDB">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div class="form-group">
+                <label class="form-label" for="min-exp">Min Experience (Yrs)</label>
+                <input type="number" id="min-exp" class="form-input" value="3.0" step="0.5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="min-edu">Min Education</label>
+                <input type="text" id="min-edu" class="form-input" value="B.Tech Computer Science">
+              </div>
+            </div>
+
+            <!-- Candidate Resume Selection -->
+            <div class="panel-header" style="margin-top:24px;">
+              <h2 class="panel-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                2. Candidate Resume Upload
+              </h2>
+              <span class="panel-tag">PDF / Text Input</span>
+            </div>
+
+            <!-- PDF File Upload Dropzone -->
+            <div class="form-group">
+              <label class="form-label">Upload Resume PDF File</label>
+              <div class="dropzone" onclick="document.getElementById('resume-file-input').click();">
+                <div class="dropzone-icon">📄</div>
+                <div style="font-size:13px; font-weight:700; color:#fff;">Click to select PDF Resume</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">PyMuPDF & pdfplumber native parsing</div>
+              </div>
+              <input type="file" id="resume-file-input" accept=".pdf,.txt" style="display:none;">
+            </div>
+
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Or select a preset candidate profile:</p>
+
+            <div class="preset-grid">
+              <button type="button" class="preset-btn active" data-preset="ananya">Ananya Patel<br><small>Senior Dev (5.5 yrs)</small></button>
+              <button type="button" class="preset-btn" data-preset="rahul">Rahul Sharma<br><small>ML Engineer (4.0 yrs)</small></button>
+              <button type="button" class="preset-btn" data-preset="priya">Priya Verma<br><small>Full Stack (3.2 yrs)</small></button>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="resume-text-input">Resume Text Preview</label>
+              <textarea id="resume-text-input" class="form-textarea" style="min-height:140px; font-family:'JetBrains Mono', monospace; font-size:12px;"></textarea>
+              <div id="selected-file-name" style="font-size:12px; color:var(--cyan-accent); margin-top:4px;">Loaded sample: Ananya Patel</div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="analyze-btn">
+              ⚡ Execute AI Resume Analysis
+            </button>
+          </form>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Results & AI Intelligence Dashboard -->
+      <main class="right-col" id="results-section">
+
+        <!-- Score Overview Hero -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-tag" id="verdict-badge-el">SHORTLIST — High Fit Candidate</span>
+              <h2 class="panel-title" style="margin-top:6px;" id="cand-name">Ananya Patel</h2>
+              <p style="font-size:13px; color:var(--text-muted);" id="cand-meta">5.5 yrs exp • B.Tech Computer Science</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--text-dim);" id="db-record-tag">DB ID: Pending</span>
+              <button class="preset-btn" id="export-json-btn">📥 Export JSON</button>
+              <button class="preset-btn" id="print-report-btn">🖨️ Print Report</button>
+            </div>
+          </div>
+
+          <!-- Gauges -->
+          <div class="hero-score-grid">
+            <div class="score-card">
+              <div class="score-gauge">
+                <svg viewBox="0 0 100 100">
+                  <circle class="score-circle-bg" cx="50" cy="50" r="42"/>
+                  <circle class="score-circle-val" id="overall-score-gauge" cx="50" cy="50" r="42"/>
+                </svg>
+                <div class="score-val-text" id="overall-score-val">98%</div>
+              </div>
+              <div class="score-title">Overall Composite Score</div>
+            </div>
+
+            <div class="score-card">
+              <div class="score-gauge">
+                <svg viewBox="0 0 100 100">
+                  <circle class="score-circle-bg" cx="50" cy="50" r="42"/>
+                  <circle class="score-circle-val" id="ats-score-gauge" cx="50" cy="50" r="42" style="stroke:var(--purple-accent);"/>
+                </svg>
+                <div class="score-val-text" id="ats-score-val">95%</div>
+              </div>
+              <div class="score-title">ATS Format Match</div>
+            </div>
+
+            <div class="score-card">
+              <div class="score-gauge">
+                <svg viewBox="0 0 100 100">
+                  <circle class="score-circle-bg" cx="50" cy="50" r="42"/>
+                  <circle class="score-circle-val" id="skill-score-gauge" cx="50" cy="50" r="42" style="stroke:var(--emerald-accent);"/>
+                </svg>
+                <div class="score-val-text" id="skill-score-val">100%</div>
+              </div>
+              <div class="score-title">Skill Vector Match</div>
+            </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px; font-size:13px; color:var(--text-main);" id="verdict-summary">
+            "Strong candidate for Senior AI / ML Engineer. Demonstrates solid Python, FastAPI, spaCy, and React.js match with 5.5 years of relevant experience."
+          </div>
+        </div>
+
+        <!-- Extracted Skills & NLP Entity Matrix -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">NLP Entity & Skill Extraction Matrix</h3>
+            <span class="panel-tag">spaCy & TF-IDF</span>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:700; color:var(--emerald-accent); margin-bottom:8px;">MATCHED SKILLS:</div>
+            <div class="skill-pills" id="matched-skills-container"></div>
+          </div>
+
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--rose-accent); margin-bottom:8px;">MISSING / RECOMMENDED SKILLS:</div>
+            <div class="skill-pills" id="missing-skills-container"></div>
+          </div>
+        </div>
+
+        <!-- Layout & Deep Learning Analysis -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Resume Layout & Deep Learning Analysis</h3>
+            <span class="panel-tag">Format & Neural Match</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px;">
+            <div style="background:rgba(7,9,14,0.5); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px;">
+              <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:4px;">ATS LAYOUT SCORE</div>
+              <div style="font-size:24px; font-weight:800; color:var(--cyan-accent);" id="layout-score-val">85%</div>
+              <div style="font-size:12px; color:var(--text-dim);" id="layout-status-desc">Clean section demarcations detected</div>
+            </div>
+
+            <div style="background:rgba(7,9,14,0.5); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px;">
+              <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:4px;">DEEP LEARNING NEURAL MATCH</div>
+              <div style="font-size:24px; font-weight:800; color:#a855f7;" id="dl-score-val">70%</div>
+              <div style="font-size:12px; color:var(--text-dim);" id="dl-framework-desc">PyTorch / TensorFlow Transformer Embeddings</div>
+            </div>
+          </div>
+
+          <div style="font-size:12px; color:var(--text-muted); line-height:1.5;" id="layout-suggestions-container"></div>
+        </div>
+
+        <!-- Slide 7: Transparent Eligibility Evaluation -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Transparent Eligibility Criteria Evaluation</h3>
+            <span class="panel-tag">Rules Engine</span>
+          </div>
+
+          <div class="eligibility-list" id="eligibility-list-container"></div>
+        </div>
+
+        <!-- Slide 8: Career Mapping ("What Jobs Should They Pursue?") -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">What Jobs Should They Pursue?</h3>
+            <span class="panel-tag">Career Intelligence</span>
+          </div>
+
+          <div class="career-grid" id="career-grid-container"></div>
+        </div>
+
+        <!-- Certificate & Project Suggestions -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">AI Certificate & Project Advice</h3>
+            <span class="panel-tag">Portfolio Recommendations</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--amber-accent); margin-bottom:8px;">RECOMMENDED CERTIFICATIONS:</div>
+              <div id="cert-advice-container"></div>
+            </div>
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--cyan-accent); margin-bottom:8px;">RECOMMENDED PORTFOLIO PROJECTS:</div>
+              <div id="project-advice-container"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 9: Candidate Gap Analysis & Learning Roadmap -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Actionable 3-Phase Learning Roadmap</h3>
+            <span class="panel-tag">Personalized Plan</span>
+          </div>
+
+          <div>
+            <div class="roadmap-timeline" id="roadmap-container"></div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <script src="js/sample_resumes.js"></script>
+  <script src="js/nlp_simulator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
