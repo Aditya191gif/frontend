@@ -14,7 +14,10 @@ async function initServerCheck() {
   const dbStatusText = document.getElementById('db-status-text');
   
   try {
-    const res = await fetch('http://127.0.0.1:8000/api/health', { signal: AbortSignal.timeout(2000) });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch('http://127.0.0.1:8000/api/health', { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (res.ok) {
       const health = await res.json();
       liveServerAvailable = true;
@@ -42,7 +45,7 @@ function bindEvents() {
   document.querySelectorAll('.preset-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       if (!btn.getAttribute('data-preset')) return;
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.preset-btn[data-preset]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const key = btn.getAttribute('data-preset');
       loadPresetResume(key);
@@ -181,7 +184,7 @@ function renderResults(data) {
   // Verdict badge
   const verdictEl = document.getElementById('verdict-badge-el');
   verdictEl.textContent = `${scores.verdict} — ${scores.verdict_badge}`;
-  verdictEl.className = `badge badge-${scores.verdict === 'SHORTLIST' ? 'pass' : (scores.verdict === 'CONSIDER' ? 'warn' : 'fail')}`;
+  verdictEl.className = `panel-tag badge-${scores.verdict === 'SHORTLIST' ? 'pass' : (scores.verdict === 'CONSIDER' ? 'warn' : 'fail')}`;
   
   document.getElementById('verdict-summary').textContent = scores.summary_text;
   
