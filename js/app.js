@@ -1,7 +1,78 @@
 let currentAnalysisData = null;
 let liveServerAvailable = false;
 
+// Theme Manager Constants & Logic
+const THEME_STORAGE_KEY = 'talent_track_theme';
+
+function getAutoResolvedTheme() {
+  const currentHour = new Date().getHours();
+  // 6:00 AM (06:00) to 6:00 PM (18:00) -> Light mode; 6:00 PM (18:00) to 6:00 AM (06:00) -> Dark mode
+  const isDay = currentHour >= 6 && currentHour < 18;
+  return {
+    theme: isDay ? 'light' : 'dark',
+    phase: isDay ? 'Day' : 'Night'
+  };
+}
+
+function applyThemeMode(mode, save = true) {
+  if (save) {
+    localStorage.setItem(THEME_STORAGE_KEY, mode);
+  }
+
+  const autoInfo = getAutoResolvedTheme();
+  let resolvedTheme = mode;
+
+  if (mode === 'auto') {
+    resolvedTheme = autoInfo.theme;
+  }
+
+  document.documentElement.setAttribute('data-theme', resolvedTheme);
+  document.documentElement.setAttribute('data-theme-mode', mode);
+
+  // Update theme button active classes
+  const buttons = {
+    light: document.getElementById('theme-btn-light'),
+    dark: document.getElementById('theme-btn-dark'),
+    auto: document.getElementById('theme-btn-auto')
+  };
+
+  Object.keys(buttons).forEach(key => {
+    if (buttons[key]) {
+      buttons[key].classList.toggle('active', key === mode);
+    }
+  });
+
+  // Update auto badge indicator (Day / Night)
+  const autoIndicator = document.getElementById('theme-auto-indicator');
+  if (autoIndicator) {
+    autoIndicator.textContent = autoInfo.phase;
+    autoIndicator.title = `Current time resolves to ${autoInfo.phase} (${autoInfo.theme === 'light' ? 'Light Ivory theme active' : 'Dark Obsidian theme active'})`;
+  }
+}
+
+function initThemeManager() {
+  const savedMode = localStorage.getItem(THEME_STORAGE_KEY) || 'auto';
+  applyThemeMode(savedMode, false);
+
+  const btnLight = document.getElementById('theme-btn-light');
+  const btnDark = document.getElementById('theme-btn-dark');
+  const btnAuto = document.getElementById('theme-btn-auto');
+
+  if (btnLight) btnLight.addEventListener('click', () => applyThemeMode('light'));
+  if (btnDark) btnDark.addEventListener('click', () => applyThemeMode('dark'));
+  if (btnAuto) btnAuto.addEventListener('click', () => applyThemeMode('auto'));
+
+  // Periodic check: every 60 seconds, if mode is auto, transition automatically if 6AM/6PM boundary crossed
+  setInterval(() => {
+    const currentMode = localStorage.getItem(THEME_STORAGE_KEY) || 'auto';
+    if (currentMode === 'auto') {
+      applyThemeMode('auto', false);
+    }
+  }, 60000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeManager();
   initServerCheck();
   bindEvents();
   loadPresetResume('ananya');
@@ -21,8 +92,8 @@ async function initServerCheck() {
     if (res.ok) {
       const health = await res.json();
       liveServerAvailable = true;
-      statusDot.style.backgroundColor = '#10b981';
-      statusDot.style.boxShadow = '0 0 10px #10b981';
+      statusDot.style.backgroundColor = 'var(--pass-color)';
+      statusDot.style.boxShadow = '0 0 10px var(--pass-color)';
       statusText.textContent = 'FastAPI Engine Active';
       dbStatusText.textContent = health.database || 'MongoDB Active';
     } else {
@@ -30,8 +101,8 @@ async function initServerCheck() {
     }
   } catch (e) {
     liveServerAvailable = false;
-    statusDot.style.backgroundColor = '#f59e0b';
-    statusDot.style.boxShadow = '0 0 10px #f59e0b';
+    statusDot.style.backgroundColor = 'var(--warn-color)';
+    statusDot.style.boxShadow = '0 0 10px var(--warn-color)';
     statusText.textContent = 'Browser Standalone Mode (Client NLP)';
     dbStatusText.textContent = 'Local Storage Fallback';
   }
@@ -249,7 +320,7 @@ function renderResults(data) {
   const certAdviceContainer = document.getElementById('cert-advice-container');
   if (certAdviceContainer && report.certificate_advice) {
     certAdviceContainer.innerHTML = report.certificate_advice.map(c => `
-      <div style="padding:8px 12px; background:rgba(7,9,14,0.5); border:1px solid var(--border-color); border-radius:4px; margin-bottom:6px; font-size:12px; color:var(--text-main);">
+      <div class="info-subbox" style="margin-bottom:6px; padding:10px 12px; font-size:12px;">
         🏆 ${c}
       </div>
     `).join('');
@@ -258,7 +329,7 @@ function renderResults(data) {
   const projAdviceContainer = document.getElementById('project-advice-container');
   if (projAdviceContainer && report.project_suggestions) {
     projAdviceContainer.innerHTML = report.project_suggestions.map(p => `
-      <div style="padding:8px 12px; background:rgba(7,9,14,0.5); border:1px solid var(--border-color); border-radius:4px; margin-bottom:6px; font-size:12px; color:var(--text-main);">
+      <div class="info-subbox" style="margin-bottom:6px; padding:10px 12px; font-size:12px;">
         💻 ${p}
       </div>
     `).join('');
