@@ -193,7 +193,7 @@
                 </svg>
                 <div class="score-val-text" id="ats-score-val">95%</div>
               </div>
-              <div class="score-title">ATS Format Match</div>
+              <div class="score-title">ATS Semantic Match</div>
             </div>
 
             <div class="score-card">
@@ -204,7 +204,7 @@
                 </svg>
                 <div class="score-val-text" id="skill-score-val">100%</div>
               </div>
-              <div class="score-title">Skill Vector Match</div>
+              <div class="score-title">Core Skill Coverage</div>
             </div>
           </div>
 
@@ -214,42 +214,46 @@
         </div>
 
         <!-- Trained AI Model Intelligence Card -->
-        <div class="card-panel" id="trained-model-card" style="border: 1px solid rgba(16, 185, 129, 0.35); background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(11, 15, 25, 0.6) 100%);">
+        <div class="card-panel trained-model-panel" id="trained-model-card">
           <div class="panel-header">
             <div>
-              <span class="panel-tag" id="model-status-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--emerald-accent); border: 1px solid var(--emerald-accent);">
+              <span class="panel-tag panel-tag-active" id="model-status-tag">
                 ● Trained Machine Learning Model Active
               </span>
               <h3 class="panel-title" style="margin-top: 6px;">AI Domain Classification & Neural Match</h3>
             </div>
             <div style="text-align: right;">
-              <span class="panel-tag" id="model-accuracy-badge" style="background: rgba(99, 102, 241, 0.15); color: var(--primary-accent); border: 1px solid var(--primary-accent);">
+              <span class="panel-tag panel-tag-accuracy" id="model-accuracy-badge">
                 Accuracy: 100.0% • 1,100 Trained Samples
               </span>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 8px;">
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px;">
-              <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Predicted Candidate Domain</div>
-              <div style="font-size: 17px; font-weight: 700; color: #ffffff; margin: 6px 0;" id="model-predicted-domain">Data Science & Machine Learning</div>
+          <div class="model-card-grid">
+            <div class="model-inner-box">
+              <div>
+                <div class="model-inner-label">Predicted Candidate Domain</div>
+                <div class="model-predicted-title" id="model-predicted-domain">Data Science & Machine Learning</div>
+              </div>
               
-              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-top: 10px; margin-bottom: 4px;">
-                <span style="color: var(--text-muted);">Model Confidence</span>
-                <span style="font-weight: 700; color: var(--emerald-accent);" id="model-confidence-val">96.8%</span>
-              </div>
-              <div style="height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden;">
-                <div id="model-confidence-bar" style="height: 100%; width: 96.8%; background: linear-gradient(90deg, var(--emerald-accent), var(--primary-accent)); border-radius: 3px; transition: width 0.8s ease;"></div>
-              </div>
+              <div>
+                <div class="model-confidence-row">
+                  <span style="color: var(--text-muted); font-weight: 600;">Model Confidence</span>
+                  <span class="model-confidence-val" id="model-confidence-val">96.8%</span>
+                </div>
+                <div class="model-confidence-track">
+                  <div class="model-confidence-fill" id="model-confidence-bar" style="width: 96.8%;"></div>
+                </div>
 
-              <div style="margin-top: 12px; font-size: 11px; color: var(--text-dim);" id="model-details-text">
-                Architecture: Random Forest Classifier (120 Trees) + Sublinear TF-IDF (6,000 N-Grams)
+                <div class="model-details-meta" id="model-details-text">
+                  Architecture: Random Forest Classifier (120 Trees) + Sublinear TF-IDF (6,000 N-Grams)
+                </div>
               </div>
             </div>
 
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px;">
-              <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Top Predicted Domains (Probability Distribution)</div>
-              <div id="top-domains-list" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+            <div class="model-inner-box">
+              <div class="model-inner-label">Top Predicted Domains (Probability Distribution)</div>
+              <div class="top-domains-container" id="top-domains-list">
                 <!-- Dynamically populated -->
               </div>
             </div>
