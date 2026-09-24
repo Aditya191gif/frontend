@@ -1,3 +1,5 @@
+const API_BASE_URL = window.API_BASE_URL || 'http://127.0.0.1:8000';
+
 let currentAnalysisData = null;
 let liveServerAvailable = false;
 
@@ -87,7 +89,7 @@ async function initServerCheck() {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const res = await fetch('http://127.0.0.1:8000/api/health', { signal: controller.signal });
+    const res = await fetch(`${API_BASE_URL}/api/health`, { signal: controller.signal });
     clearTimeout(timeoutId);
     if (res.ok) {
       const health = await res.json();
@@ -203,7 +205,7 @@ async function handleAnalyze(e) {
         formData.append('resume_text', resumeText);
       }
       
-      const res = await fetch('http://127.0.0.1:8000/api/analyze', {
+      const res = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: 'POST',
         body: formData
       });
